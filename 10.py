@@ -1,26 +1,42 @@
-import nltk
-from collections import defaultdict, Counter
 
-nltk.download("punkt_tab", quiet=True)
+class State:
+    def handle(self):
+        pass
 
-corpus = """
-Natural Language Processing is an important field of Artificial Intelligence.
-Natural Language Processing enables computers to understand human language.
-Artificial Intelligence and Machine Learning are transforming technology.
-Machine Learning is a subset of Artificial Intelligence.
-"""
+class ScanningState(State):
+    def handle(self):
+        print("Robot Arm: Scanning Objects")
 
-tokens = nltk.word_tokenize(corpus.lower())
-successors = defaultdict(list)
+class GraspingState(State):
+    def handle(self):
+        print("Robot Arm: Grasping Object")
 
-for first, second in nltk.bigrams(tokens):
-    successors[first].append(second)
+class DockingState(State):
+    def handle(self):
+        print("Robot Arm: Returning to Dock")
 
-word = input("Enter a word: ").strip().lower()
+class RobotArm:
+    def __init__(self):
+        self.state = None
 
-if word in successors:
-    next_words = successors[word]
-    print("Possible words:", next_words)
-    print("Prediction:", Counter(next_words).most_common(1)[0][0])
+    def set_state(self, state):
+        self.state = state
+
+    def execute(self):
+        self.state.handle()
+
+robot = RobotArm()
+states = {
+    1: ScanningState,
+    2: GraspingState,
+    3: DockingState
+}
+
+print("1. Scanning  2. Grasping  3. Docking")
+choice = int(input("Enter Choice: "))
+
+if choice in states:
+    robot.set_state(states[choice]())
+    robot.execute()
 else:
-    print("Word not found in corpus.")
+    print("Invalid Choice")

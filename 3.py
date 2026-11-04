@@ -1,16 +1,36 @@
-import nltk
 
-for resource in ["punkt_tab", "averaged_perceptron_tagger_eng"]:
-    nltk.download(resource, quiet=True)
+class SmartWarehouseRobot:
+    def __init__(self):
+        self.name = "Smart Warehouse Sorting Robot"
 
-sentence = "The little cat sat on the red mat"
-tags = nltk.pos_tag(nltk.word_tokenize(sentence))
+    def functional(self):
+        return [
+            "Scan Package", "Read Barcode",
+            "Find Destination", "Sort Package",
+            "Update Inventory", "Delivery Status"
+        ]
 
-parser = nltk.RegexpParser(r"NP: {<DT>?<JJ>*<NN>}")
-tree = parser.parse(tags)
+    def non_functional(self):
+        return {
+            "Performance": "100 packages/min",
+            "Reliability": "99.9%",
+            "Safety": "Emergency Stop",
+            "Scalability": "Multiple Robots",
+            "Availability": "24x7"
+        }
 
-print("POS tags:", tags)
-print(tree)
+    def failures(self):
+        return {
+            "Sensor": ("Sensor Failure", "Restart Sensor"),
+            "Camera": ("Capture Failure", "Retry Capture"),
+            "Barcode": ("Not Detected", "Manual Check"),
+            "Sorting": ("Mechanical Jam", "Stop Conveyor"),
+            "Database": ("Connection Lost", "Reconnect"),
+            "Network": ("Communication Failure", "Retry")
+        }
 
-for subtree in tree.subtrees(lambda t: t.label() == "NP"):
-    print(" ".join(word for word, tag in subtree.leaves()))
+robot = SmartWarehouseRobot()
+print(robot.name)
+print("Functional:", robot.functional())
+print("Non-Functional:", robot.non_functional())
+print("Failures and Mitigation:", robot.failures())

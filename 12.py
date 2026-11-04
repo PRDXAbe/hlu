@@ -1,49 +1,43 @@
-from nltk.chat.util import Chat, reflections
+import time
 
-pairs = [
-    [
-        r"(hi|hello|hey)\b.*",
-        ["Hello! How can I help you?"]
-    ],
-    [
-        r"what is your name\s*\??",
-        ["My name is NLP Chatbot."]
-    ],
-    [
-        r"how are you\s*\??",
-        ["I am fine. Thank you!"]
-    ],
-    [
-        r"what can you do\s*\??",
-        ["I can answer simple questions and help you learn NLP."]
-    ],
-    [
-        r".*\byour creator\b.*",
-        ["I was created using Python and NLTK."]
-    ],
-    [
-        r".*\bmachine learning\b.*",
-        ["Machine Learning is a branch of Artificial Intelligence."]
-    ],
-    [
-        r".*\bnlp\b.*",
-        ["NLP stands for Natural Language Processing."]
-    ],
-    [
-        r"(bye|goodbye)\b.*",
-        ["Goodbye! Have a nice day."]
-    ],
-    [
-        r".*",
-        ["Could you please rephrase your question?"]
+print("Legacy Workflow")
+start = time.time()
+
+for i in range(2):
+    print("Opening Application")
+    time.sleep(0.1)
+    print("Logging In")
+    time.sleep(0.1)
+    print("Processing Invoice")
+    time.sleep(0.1)
+
+legacy_time = time.time() - start
+
+def process_invoice():
+    for step in ["Opening Application", "Logging In",
+                 "Processing Invoice"]:
+        print(step)
+        time.sleep(0.1)
+
+print("Refactored Workflow")
+start = time.time()
+
+for i in range(2):
+    process_invoice()
+
+new_time = time.time() - start
+
+def refactoring_pipeline():
+    steps = [
+        "Legacy Workflow Loaded",
+        "Duplicate Code Identified",
+        "Duplicate Code Removed",
+        "Reusable Function Created",
+        "Refactored Workflow Executed"
     ]
-]
+    for step in steps:
+        print(step)
 
-chatbot = Chat(pairs, reflections)
-print("Type 'bye' or 'goodbye' to exit.")
-
-while True:
-    text = input("> ").strip()
-    print(chatbot.respond(text))
-    if text.lower() in {"bye", "goodbye"}:
-        break
+refactoring_pipeline()
+print(f"Legacy Time: {legacy_time:.2f}s")
+print(f"Refactored Time: {new_time:.2f}s")

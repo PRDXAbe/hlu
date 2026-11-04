@@ -1,35 +1,28 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.pipeline import make_pipeline
+import unittest
+from unittest.mock import patch
 
-messages = [
-    "Congratulations! You have won a free lottery ticket",
-    "Claim your cash prize now",
-    "Limited time offer, click here",
-    "Meeting scheduled at 10 AM tomorrow",
-    "Please submit your assignment today",
-    "Let's have lunch together",
-    "You won a free vacation package",
-    "Your bank account has been credited"
-]
-labels = ["Spam", "Spam", "Spam", "Ham", "Ham", "Ham", "Spam", "Ham"]
+def get_weather():
+    return "Sunny"
 
-X_train, X_test, y_train, y_test = train_test_split(
-    messages, labels, test_size=0.25, random_state=42,
-    stratify=labels
-)
+def decision():
+    weather = get_weather()
+    if weather == "Sunny":
+        return "Go Outside"
+    if weather == "Rainy":
+        return "Stay Home"
+    return "Unknown Decision"
 
-model = make_pipeline(
-    TfidfVectorizer(stop_words="english"),
-    MultinomialNB()
-)
-model.fit(X_train, y_train)
-predictions = model.predict(X_test)
+class TestDecision(unittest.TestCase):
+    @patch("__main__.get_weather", return_value="Sunny")
+    def test_sunny(self, mock):
+        self.assertEqual(decision(), "Go Outside")
 
-print(f"Accuracy: {accuracy_score(y_test, predictions):.2%}")
-print(classification_report(y_test, predictions, zero_division=0))
+    @patch("__main__.get_weather", return_value="Rainy")
+    def test_rainy(self, mock):
+        self.assertEqual(decision(), "Stay Home")
 
-message = input("Enter a message: ")
-print("Prediction:", model.predict([message])[0])
+    @patch("__main__.get_weather", return_value="Cloudy")
+    def test_unknown(self, mock):
+        self.assertEqual(decision(), "Unknown Decision")
+
+unittest.main(argv=[""], exit=False)

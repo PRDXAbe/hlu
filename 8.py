@@ -1,34 +1,44 @@
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.pipeline import make_pipeline
 
-df = pd.read_csv(input("CSV path: "))
+class TextPreprocessor:
+    def process(self, text):
+        return text.lower().strip()
 
-if not {"text", "label"}.issubset(df.columns):
-    raise ValueError("CSV must contain text and label columns.")
+class IntentDetector:
+    def detect(self, text):
+        if "refund" in text:
+            return "Refund Request"
+        if "payment" in text:
+            return "Billing Issue"
+        if "login" in text:
+            return "Technical Support"
+        return "General Inquiry"
 
-df = df.dropna(subset=["text", "label"])
+class SentimentAnalyzer:
+    def analyze(self, text):
+        words = ["bad", "angry", "issue", "problem", "not working"]
+        return "Negative" if any(w in text for w in words) else "Neutral"
 
-X_train, X_test, y_train, y_test = train_test_split(
-    df["text"], df["label"], test_size=0.2, random_state=42
-)
+class TicketRouter:
+    def route(self, intent):
+        routes = {
+            "Refund Request": "Finance Team",
+            "Billing Issue": "Accounts Team",
+            "Technical Support": "IT Support Team"
+        }
+        return routes.get(intent, "Customer Service Team")
 
-model = make_pipeline(
-    TfidfVectorizer(stop_words="english", max_df=0.7),
-    LogisticRegression(max_iter=1000)
-)
-model.fit(X_train, y_train)
-predictions = model.predict(X_test)
+class CustomerSupportFacade:
+    def __init__(self):
+        self.pre = TextPreprocessor()
+        self.det = IntentDetector()
+        self.sent = SentimentAnalyzer()
+        self.route = TicketRouter()
 
-print(f"Accuracy: {accuracy_score(y_test, predictions):.2%}")
-print(classification_report(y_test, predictions, zero_division=0))
+    def handle(self, query):
+        text = self.pre.process(query)
+        intent = self.det.detect(text)
+        print("Intent:", intent)
+        print("Sentiment:", self.sent.analyze(text))
+        print("Department:", self.route.route(intent))
 
-while True:
-    news = input("Enter news or 'exit': ").strip()
-    if news.lower() == "exit":
-        break
-    if news:
-        print("Prediction:", model.predict([news])[0])
+CustomerSupportFacade().handle(input("Enter Query: "))

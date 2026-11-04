@@ -1,28 +1,24 @@
-import nltk
-from sklearn.feature_extraction.text import TfidfVectorizer
+from abc import ABC, abstractmethod
+import random
 
-resources = [
-    "punkt_tab",
-    "averaged_perceptron_tagger_eng",
-    "maxent_ne_chunker_tab",
-    "words"
-]
+class Sensor(ABC):
+    @abstractmethod
+    def read_data(self):
+        pass
 
-for resource in resources:
-    nltk.download(resource, quiet=True)
+class TemperatureSensor(Sensor):
+    def read_data(self):
+        return f"Temperature: {random.randint(25, 40)} °C"
 
-text = "Barack Obama was born in Hawaii and worked at Microsoft."
-tags = nltk.pos_tag(nltk.word_tokenize(text))
-print(nltk.ne_chunk(tags))
+class HumiditySensor(Sensor):
+    def read_data(self):
+        return f"Humidity: {random.randint(40, 80)} %"
 
-documents = [
-    "Natural Language Processing is interesting",
-    "Machine Learning is a part of Artificial Intelligence",
-    "Natural Language Processing uses Machine Learning"
-]
+class MotionSensor(Sensor):
+    def read_data(self):
+        return f"Motion: {random.choice(['Detected', 'Not Detected'])}"
 
-vectorizer = TfidfVectorizer()
-matrix = vectorizer.fit_transform(documents)
+sensors = [TemperatureSensor(), HumiditySensor(), MotionSensor()]
 
-print("Features:", vectorizer.get_feature_names_out())
-print("TF-IDF:\n", matrix.toarray())
+for s in sensors:
+    print(s.read_data())
